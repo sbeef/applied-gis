@@ -49,12 +49,12 @@ def sum_below_elevation(population_feature, elevation_raster, elevation,
 	"""Return the number of people below a certain elevation.
 
 	Keyword arguments:
-	population_feature	-- a shapefile containing population information
-	elevation_raster		-- a digitial elevation for the region
-	elevation 				  -- the elevation to use in the calculation
-	spatial_relationshp	-- the spatial relationship or list of spatial 
-                         relationshps used to calculate overlap by ArcGIS
-	population_field		-- the field in the population file with population data
+	population_feature  -- a shapefile containing population information
+	elevation_raster    -- a digitial elevation for the region
+	elevation           -- the elevation to use in the calculation
+	spatial_relationshp -- the spatial relationship or list of spatial 
+                               relationshps used to calculate overlap by ArcGIS
+	population_field    -- the field in the population file with population data
   """
   # create the elevation polygon 
   # (polygons classify area as below or above elevation)
