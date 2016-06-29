@@ -55,7 +55,7 @@ def sum_below_elevation(population_feature, elevation_raster, elevation,
 	spatial_relationshp -- the spatial relationship or list of spatial 
                                relationshps used to calculate overlap by ArcGIS
 	population_field    -- the field in the population file with population data
-  """
+  	"""
   # create the elevation polygon 
   # (polygons classify area as below or above elevation)
 	elevation_polygon = "in_memory/%s" % ELEVATION_LAYER
