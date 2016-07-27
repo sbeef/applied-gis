@@ -1,0 +1,62 @@
+\documentclass{article}
+
+\usepackage[urlcolor=blue]{hyperref}
+\usepackage{graphicx}
+
+\graphicspath{{graphics/}}
+
+\begin{document}
+\title{Loops}
+\maketitle
+
+\section{Patterns}
+In this lab you will be working with hurricane data from NOAA.  NOAA archives all the advisories they issue for hurricanes and tropical storms.  
+\begin{enumerate}
+    \item Go to \url{http://www.nhc.noaa.gov/help/tcm.shtml?ALL} and read the description of their advisories.  You will use the information in the advisories to track the position of the hurricane, its size, and the forecasts over the course of the storms life.  
+    \item See the annotated advisory provided to see what information you will be using and where in the advisory it comes from (Fig. \ref{fig:sampleadvisory}).
+
+\begin{figure}
+    \includegraphics[width=\textwidth]{annotated_advisory}
+    \caption{Example hurricane advisory}
+    \label{fig:sampleadvisory}
+\end{figure}
+
+    \item Now, go to \url{http://www.nhc.noaa.gov/archive/2016/} and find the advisory archive for the hurricane you will be working with.  
+    \item Look at a few of the advisories and try to locate the information we're interested in.  Now you could go through every advisory, copying down the information you need, but there's a better way!  Each advisory is stuctured the same way and contains the same information.  All the advisories together can be thought of as forming a pattern, repeating again and again with slight variations. You can teach Python this pattern by creating a template, and like playing a game of Mad Libs in reverse, use the template to pick out the hurricane's latitude like you could the first custom adjitive used in a complted Mad Lib.  Although the construction of these templates is slightly outside of the scope of this course\footnote{The way that the templates were defined for this script is called ``regular expressions'', or regex.  They can be a bit obtuse but with a reference and some trail and error, you can get a lot done.  If you're interested in learning how to write them, here are some fun ways to get started: \href{https://regexcrossword.com/howtoplay}{regex crosswords}, \href{http://regexone.com/}{interactive tutorial}}, start trying to recognize times you work with any sort of text in a repetitive manner, like finding all the phone numbers or emails in a document or changing the way a date or title is formatted in a set of documents.  These could be situations where a little script could save a lot of time.
+\end{enumerate}
+
+\section{The script}
+\begin{enumerate}
+    \item Download and extract the zip file containing the advisory script from blackboard.  
+    \item Open up XXXX with IDLE.  
+    
+        Hopefully this is starting to look a little familiar, we'll go through the scrip line by line and introduce three new topics: comments, file paths, and loops.
+    \item \verb+ This script...+ The \verb+#+ symbol tells Python to ignore everything until the next line.  This allows you to write \textbf{comments} in your scripts for any people who might be reading it.
+    \item \verb+import forecast_parser as fp+ Don't worry about this line for now, it's just telling python where to find some of the tools we'll be using in this script.
+    \item \verb+ADVISORY_ARCHIVE_URL = "" # The...+ See that \verb+=+ sign?  If you'll recall from last week, this means we're setting a label.  
+    \begin{enumerate}
+        \item In the context of Python, labels are refered to as \textbf{variables} since what exactly they refer to can vary.  Think back to algebra, the concept of a variable in Python is essentially the same as the variables you worked with in math, although in Python, variables can refer to more than just numbers.  
+        \item The label name is \verb+ADVISORY_ARCHIVE_URL+, but what exactly are we labeling?  Single quotes (\verb+'+) and double quotes (\verb+"+) are used to deliniate \textbf{strings}, blocks of text.   This distinguishes it from text that Python should try to \textbf{evaluate}, like labels and tools and instructions.  
+        \item There's nothing inbetween the two quotes, so right now \verb+ADVISORY_ARCHIVE_URL+ is refering to an ``empty'' string, no text at all.  
+        \item The the \verb+#+ designates a comment, so Python knows to ignore the rest of the line.  
+        \item In between the \verb+"+, you should put the web address for the advisory archive of your hurricane.  
+    \end{enumerate}
+    \item \verb+OUTPUT_SPREADSHEET_FILE = "" #...+ This instructions is essentially the same as above, only with a different variable.  This string will tell the script where to save the spreadsheet it makes, and what to call it.  This is the ``path'' of the file, like a URL for a file on your own computer.  When you've run tools in ArcGIS maybe you've noticed that after selecting a file or output, you're left with something like ``\textbf{Output Feature Class:} \verb+F:\GIS\lab_1\oberlin_dem.tif+''.  This is a file path, directions to a sepecific file or folder.  In this example, the file ``\verb+oberlin_dem.tif+'' is in the folder ``\verb+lab_1+'' which is in the folder ``GIS'', etc.  
+    \item \verb+advisory_informaton_list = list()+ This instruction both sets a variable, and calls a tool, or \textbf{function}.
+    \begin{enumerate}
+        \item It calls the ``list'' function, which returns an empty list. 
+        \item Then it labels the empty list (the result of the list function) as ``\verb+advisory_information_list+
+    \end{enumerate}
+    \item \verb+advisory_url_list = fp.get_advisory_urls(ADVISORY_ARCHIVE_URL)+  Another instruction that sets a label and calls a tool.  Most instructions in your python scripts will be like this.  This calls a function that returns a list of web addresses for each hurricane advisory.  The input is the web address of the advisory archive for your hurricane, which was labeled as ``\verb+ADVISORY_ARCHIVE_URL+''
+    \item \verb+ for url in advisory_url_list:+  This instruction is a little different from what we've seen so far.  What it does is a create a loop allowing for the same steps to be done multiple times.  The steps that will be ``looped over'' are indented below the for loop.
+
+    But how many times will this loop run?  Notice a familiar label in the instruction that creates the loop, \verb+advisory_url_list+.  It will run as many times as there are items in the list labeled by \verb+advisory_url_list+.  But what does \verb+url+ mean?  It is in fact a variable that will be set in the loop.  The instruction \verb+for url in advisory_url_list:+ can be read as ``for each item in the list labeled \verb+advisory_url_list+, give the item the label \verb+url+ and then execute the following instructions.
+    \item \verb+#...+ Next we have two comments, ignored by the computer.
+    \item \verb+advisory_function = fp.get_advisory_dictionary(url)+ Notice that this line, as well as the line below it, is indendented.  This means that they are instructions that will be looped over.  This is another instruction that calls a tool and then labels the result of the tool.  This tool, \verb+fp.get_advisory_dictionary+ gets information from a hurricane advisory.  The tool is given the url of an advisory as input.  \verb+url+ references a web address in the list that  \verb+advisory_url_list+ refers to.  It will, in turn, reference each entry in the list.
+    \item \verb+advisory_information_list.append(advisory_information)+ This instruction executes a tool.  This tool adds the item referenced by the label \verb+advisory_information+ (set in the instruction above) to the list referenced by \verb+advisory_information_list+.  This is a special tool specific to the list \verb+advisory_information_list+, which is why the only input that the tool takes is what is being appended to the list, not which list the item should be added to.  Python automatically creates this tool for every list.
+    \item \verb+fp.advisory_list_to_csv(...+ This instruction also calls a function, which creates a spreadsheet from information.  The tool is given two things as input, a list to create the spreadsheet from, and a file path to save it to.
+\end{enumerate}
+
+Now you understand what the script does.  Fill in your own values for \verb+ADVISORY_ARCHIVE_URL+ and \verb+OUTPUT_SPREADSHEET+.  Then save the script and run it by XXXX
+
+\end{document}
