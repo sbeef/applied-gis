@@ -1,0 +1,59 @@
+\documentclass{article}
+
+\begin{document}
+\title{ArcGIS tools in Python}
+\maketitle
+
+\section{The Python Shell}
+Up until now we have have worked with Python scripts, text files, that we tell the computer to run.  The computer opens up the file and then runs each instruction, one at a time.  However we can also feed instructions to the computer one at a time, working on the fly.
+\begin{enumerate}
+    \item Open up IDLE.  This time, don't open up a file, instead notice the \verb+>>>+.  This is the Python prompt, you type an instruction, press the ``enter'' or ``return'' key, and then the computer executes the instruction.  Lets give it a spin.
+    \item Write an instruction that assigns a label to a string, you can choose the label and the string.  If you've forgotten how to write this instruction, look back to previous Python instructions.
+    \item Now, call the \verb+print+ tool with the label you just set as the input.  If you've forgotten how to set input for a tool, look back to previous labs.
+    \item Now make a list with the \verb+List()+ tool, and then use that list's custom \verb+append+ function to add some strings to the list, here's an example:
+
+    \verb+my_list = List()+
+    \verb+my_list.append("this")+
+    \verb+my_list.append("is")+
+    \verb+my_list.append("a")+
+    \verb+my_list.append("list")+
+
+    \item now type in the label you gave your list to the Python prompt and press the return key.  You should see a representation of your list.
+    \item Next, lets create a loop to print every item in your list.  Do you remember how to make a loop?
+
+        \verb+for item in my_list:+
+    
+        The \verb+:+ at the end lets Python know that an indented set of instructions will follow.
+    \item Press enter.  Notice that the python shell automatically indents the line for you.  Write an instruction to print the item in the list.  What is the label that each item will be set to?
+    \item Press enter twice to finish the loop.  What did the interpreter do?
+
+\section{Selecting underwater blocks}
+By now you should have created a new shoreline polygon and used ``Select by Location'' to get an estimate of the number of people affected by a certain amount of sea level rise.  But just how accurate is that number?  Surely you noticed the large number of spatial selections methods, is one definetly morea ccurate than another?  How much does the selection method change the final estimate?  While you could fool around and try out differnet options, wouldn't it be nice if there was a \textit{systematic} and \textit{automated way to try different selection methods?  Perhaps\ldots(and i'm sure this will come as a great shock to you) \textit{a script}
+\subsection{ArcGIS documentation}
+ArcGIS has quite an extensive ammount of documentation, which perhaps you have already started to become familiar with.  If you are thinking about writing a python script to automate an ArcGIS task, this documenation is probably the first place to go to figure out how to change tools that you run from ArcMap into instructions for Python.  Open up a web broser and search for the tool we're currently looking to make a script for, ``Select Layer by Location''.  There will be multiple similar results from the documentation for different versions of ArcGIS.  While they'll all probably be accurate try to find one for the version we have on the lab computers, XXX
+
+The documentation page should have a few different sections, Summary, Usage, Syntax, Code Sample, Environment, and Licenseing Information.  If you were trying to learn more about what a tool does, Summary and Usage might be good sections to look at, but for now we're interested in Syntax, which tells you how to use the tool in a Python instruction, and Code Sample, which gives an example of it being used in a Python script.
+
+Go to the Syntax section and look at the first line (fig \ref{fig:syntax}).  Hopefully this looks similar to when you call a tool in Python.  Lets break it up into two chunks, the first part, outside of the parantheses, and section enclosed in parentheses.
+\begin{enumerate}
+    \item \verb+SelectLayerByLocation_management+ This is the name of tool, as Python knows it. 
+    \item \verb+(in_layer, {overlap_type}, ...)+ These are the inputs the tool takes.  When Python executes the tool, thie first input given to it is labeled \verb+in_layer+ and will be treated as the input layer, the second is labeled \verb+overlap_type+ and so on and so forth.  The bracks surounding an input means that this input is optional, you could call the tool \verb+SelectLayerByLocation_management(in_layer)+ or \verb+SelectLayerByLocation_management(in_layer, overlap_type)+ and so on and so forth.  Some nputs left unspecified are automatically given a default value set by the tool.
+\end{enumerate}
+
+Now continue down the table just below, with columns for Parameter, Explanation, and Data Type.  This tells you what each input, or parameter,  is actually used for, whether or not it's optional, what the default value is, and more.
+
+\begin{figure}
+    \includegraphics{syntax_summary}
+    \caption{Name and inputs of the tools}
+    \ref{fig:syntax}
+\end{figure}
+
+One of the parameters we are interested in is \verb+overlap_type+ parameter.  ArcGIS has a set list of overlap types, each of which is listed in the table.  However, if you were to call this tool in python, how do you indicate which overlap type you are interested in.  Notice the third column, ``Data Type''.  It says ``String'', which for Python is text surrounded by quotations.  If you wanted to use the \verb+COMPLETELY_CONTAINS+ overlap type when you run the tool, it would look somthing like this: \verb+SelectLayerByLocation_management(..."COMPLETELY_CONTAINS"...)+ or \verb+SelectLayerByLocation_management(...overlap_type="COMPLETELY_CONTAINS"...)+.
+
+\section{Comparing Overlap Types}
+Open up the script for this lab in IDLE.  Let's take a quick look at it.  Here's where you label some values depending on your files.  The first four will be strings, \verb+POPULATION_FEATURE+ and \verb+ELEVATION_RASTER+ will be paths to the files in question.  \verb+OVERLAP_TYPES+ will be a list, a new way of declaring lists in Python is shown in the comments of the code, give it a try.  \verb+SEALEVEL_RISE+ will be a number.
+
+Now lets move on to the instructions above the for loop.  These steps classify the DEM, make it into a polygon, and prepare the files for use by the \verb+SelectLayerByLocation_management+ tool.  This essentially replicates the steps you already did in the lab.  You may be thinking ``Hey!  I used a lot of tools that I don't see in this script''.  These tools are still being used but behind the scenes by the tool \verb+select.create)elecation_polygon+.
+
+
+Now, onto the loop.  This for loop selects the census blocks affected by sealevel rise, and sums the total number of people affected.  By know you should know enough about loops to identify which instructions will be repeated.  You should also know enough to figure what to replace the question marks with.  Fill in your values for the variables defined at the top and then fix the for loop.  Give the script a run.  Did it work?  Did it do what you thought?

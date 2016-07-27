@@ -1,14 +1,22 @@
-def get_population_function(population_features, elevation_raster, selection_method, start, stop, interval):
+import selection_script as select
+import matplotlib.pyplot as plt
+
+def get_population_function(population_feature, elevation_raster, 
+                            spatial_relationships, population_field, start, 
+                            stop, interval):
 	results list = []
-	#loop through inteval
-		val = #some sum affected function call
+        for level in range(start, stop, interval):
+                val = select.sum_below_elevation(population_Feature, 
+                                                 elevation_raster,
+                                                 spatial_relationships,
+                                                 population_field)
 		results.append((level, val))
 	return results
 
 def graph_population_function(pair_list, name):
 	sea_levels = [pair[0] for pair in pair_list]
 	populations = [pair[1] for pair in pair_list]
-	# graph
+        	
 
 def selection_comparison_graph(population_features, elevation_raster, selection_list):
 	for method in selection_list:

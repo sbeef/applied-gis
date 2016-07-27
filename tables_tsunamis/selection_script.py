@@ -2,8 +2,8 @@ import arcpy
 arcpy.CheckOutExtension('Spatial')
 arcpy.env.overwriteOutput = True
 
-BELOW_GRIDCODE = 0
-ABOVE_GRIDCODE = 1
+BELOW_GRIDCODE = 1
+ABOVE_GRIDCODE = 2
 ELEVATION_LAYER = 'elevation'
 POPULATION_LAYER = 'population'
 
@@ -80,3 +80,9 @@ def sum_below_elevation(population_feature, elevation_raster, elevation,
         sum = sum_field(POPULATION_LAYER, population_field)
         results.append((relationship, sum))
     return results
+
+def create_population_function(population_feature, elevalation_raster,
+                               spatial_relationships, population_field):
+    funct = lambda e: sum_below_elevation(population_feature, elevation_raster,
+                                          e, spatial_relationships, population_field)
+    return funct
