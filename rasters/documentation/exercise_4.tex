@@ -1,0 +1,56 @@
+\documentclass{article}
+
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
+\begin{document}
+
+\title{Exercise 4}
+\maketitle
+
+\section{Functions}
+In this exercise you will be making your own tool for calculating mean local relief.  This will involve creating your own function.  In past exercises you have applied many functions, and looked at the documentation surrounding functions.  This should leave you well prepared to make your own functions.  But before we begin, lets look at some examples.
+\begin{enumerate}
+    \item Go back to some of the folders you downloaded for previous Python exercises.  In the folder there should be the \verb+exercise_x.py+ file that you worked with.  
+    \item At the top of that file is a line saying something like \verb+import [file_name] as XX+.  This loads in functions that are \textbf{defined} in the file \verb+file_name.py+ which is in the same folder.
+    \item Open up one of the \verb+file_name.py+ file in the exercise folder and look around.
+    \item Notice that the file is almost entirely comprised of blocks of Python script that start with something like \verb+def function_name(input_1, input_2, ...):+
+
+        This is a \textbf{function definition}, something like a miniature script.  It describes a set of instructions to be preformed every time the function is called, as well as a list of inputs, variables that the instructions can reference.
+
+        In typical Python style, the \textbf{body} of the function, the set of instructions that belong to a function, is indented directly below the declaration line.
+    \item Now start to think about a function to calculate mean local relief.  What inputs would it need?  What other functions would be used in the body of the function?
+    \item Before class on Monday turn in some notes planning out a potential mean local relief function.  This should include what inputs you want your function to have, and then the functions or tools you think you will need to call, listed in the order you will need to call them.  If there are intermediate files you will need to re-use.  Make sure you include labeling them as a step.
+\end{enumerate}
+
+\section{Raster Calculator in Scripts}
+Raster Calculator is slightly more complex than other tools.  It doesn't just have an input file or two, a couple checkboxes or a dropdown list, and maybe an output location, it takes a ``Map Algebra expression''.  In fact, Raster Calculator is really a tool that evaluates these expressions.  In Python, you don't need a function to evaluate these expressions, you can write them directly like you would any line.  The result will be a new raster, the output of the expression.  Look over \href{http://desktop.arcgis.com/en/arcmap/latest/extensions/spatial-analyst/map-algebra/a-quick-tour-of-using-map-algebra.htm}{this page of ArcGIS documentation} about using Map Algebra in Python.  Pay close attention to how rasters you create with this method are saved.
+\section{Your first function}
+\begin{enumerate}
+    \item Open up IDLE and create a new Python document (File-\textgreater New)
+    \item Save the document as \verb+my_relief.py+.
+    \item Now begin your script with \verb+import arcpy+.
+    \item On a new line enter your function header: \verb+def+ then the name of your function, the inputs you want to use in parentheses, and then \verb+:+
+    \item Next you will write the body of your function based on the notes you wrote previously.  For each ArcGIS tool you use, consult the online documentation page to figure out exactly how to call each tool. 
+\end{enumerate}
+\section{Using functions}
+
+Now that you've written your function it's time to use it!  However, before you can you need to know how to use functions that are defined in another file somewhere.  The first way is by \textbf{importing} files, something that all other scripts have done.  When a Python file says \verb+import arcpy+, it searches through a predefined list of directories for \verb+arcpy.py+ and runs that script and loads in the functions and variables defined in the file.  This allows us to run tools like \verb+arcpy.SelectLayerByLocation_management+.  
+
+When python executes an \verb+import+ statement it also searches the \textbf{current working directory}, which is the folder that Python is ``working in'', and it considers all files as ``relative'' to it. When you run the interactive IDLE prompt, it has a specific preset current working directory, and when you run a file like \verb+exercise_3.py+, the current working directory is the same as the directory that the file is in, which is why in when it says \verb+import selection_script+ in \verb+exercise_3.py+, it it loads the functions in the \verb+selection_script.py+ file in the same folder as \verb+exercise_3.py+.
+
+Today you will be running your relief function that you defined in \verb+my_relied.py+ in the IDLE Python interpreter.
+\begin{enumerate}
+    \item If it's not open already open up \verb+my_relief.py+ in IDLE.
+    \item Now, open up a Python shell (Run-\textgreater Python Shell).
+    \item Try to import your my relief file with the statement \verb+import my_relief+
+
+        It should have failed, giving you an error saying that it can't find a module called \verb+my_relied+.  This is because the current working directory isn't the same folder that has \verb+my_relief.py+ in it.  Fortunately, Python gives you an easy way to change the working directory.
+    \item Import the \verb+os+ module, which has functions to do various system tasks by entering \verb+import os+ into the shell.
+    \item Now, change the working directory with the function \verb+os.chdir+ function.  As an argument the function takes a string containing the path to the folder you want to be the new current working directory.  If you're not sure how to make path strings, look back through the earlier exercises.
+    \item Now that you've changed your current working directory try importing your file again.
+    \item Call your function like you would any other, but with the \verb+my_relief+ prefix so Python knows where to look.
+\end{enumerate}
+
+Congratulations, now you've created  tool to calculate relief that you can reuse in more complicated scripts in the future.
+
+\end{document}
