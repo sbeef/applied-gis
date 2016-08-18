@@ -36,6 +36,31 @@ Now, the value of \verb+introduction_string+ is \verb+"My name is Ralpherson and
 \section{Making watersheds}
 While ArcGIS's watershed tool can create watersheds for multiple outlets at once, if the watersheds overlap at all, some of them will be truncated.  This makes creating full watersheds from a set of outlets a time consuming task.  Seperate files for each pour point would need to be created and the watershed tool would need to be used for each of them.  However, ArcGIS has some Python tools that make creating a script an ideal solution.
 
+When this script was first written, it was long and unweildy.  It would have been unpleasent to make you work with it in depth, but at this point, you are ready to more than simply apply it.  Instead the bulk of the script has been logically seperated into different functions, which you will then use to make your own script.  Let's start by familiarizing yourself with these functions so that you know how to use them correctly.
+\begin{enumerate}
+    \item Open up \verb+TOBEDETERMINED.py+
+    \item Notice at the beginning of every function there are multiple lines of text enclosed by \verb+"""+.  This is the \textbf{docstring}, information about the function.  These docstrings have 3 parts, a description, a list of arguments, and information about what it returns.  Some of this may same similar to some of the ArcGIS documentation you have read.
+    \item The first line is a description of what the function does.  This will help you figure out when to use the function.
+    \item The \verb+Args:+ section describes the \textbf{arguments} of the function, the values that it expects and what they should be.
+    \item The \verb+return+ section describes what the fucntion \textbf{returns}.  At the end of some of the functions there is a line that starts with \verb+return+.  This line tells Python to return a value.  This means that when you call the function it will evaluate to the value it returns, so you can set this value to a variable and use it later.  In past exercises whenever you had line like \verb+variable = function(input)+, you were setting a variable to a value that a function returned.
+    \item Look through the functions until you understand what they do, and think you know how to use them in your own script.  Notice when format strings are used.
+\end{enumerate{
 \subsection{Cursors}
 The way to use Python to look at or change entries in a shapefile or any table in ArcGIS, is by using \textbf{cursors}.  Cursors can be \textbf{iterated} through with for loops like lists and then used to pull out, update, and insert values of specific fields.  In this exercise we will be using a cursor to pull out the individual outlet points as well as some sort identifying information, like a number or a name.  
+\begin{enumerate}
+    \item Open up \verb+exercise_5.py+.  This is where you will write the script to make the watersheds.
+    \item Some of the script has already been written for you, but don't worry, that's just fluff, the heart of the script is still unwritten.
+    \item At the stop of the script you see that it imports the file with the functions you'll be using.
+    \item Next, a series of variables that will be used in this script are listed.  You will fill these out based on your files, and then use these variables in the script you create.
+    \item After the various variables for you to fill out, there is a for loop.  This line creates a cursor, as mentioned above, and then increments through it.  This for loop goes through every entry in your \verb+POUR_POINTS+ file and pulls out the value from the \verb+NAME_FIELD+
+    \item \verb+name = str(point)+ simply converts the value pulled from the \verb+NAME_FIELD+ into a string, in case it isn't already.
+    \item Now, using the functions in the TBD file, the parameters in caps lock listed at the top of the file, and the \verb+name+ variable, try to write a script to create a watershed from a pour point inside of the for loop.  
+
+        Some tips:
+        \begin{itemize}
+            \item Once you think you have a script, and test it, it will probably fail.  That's no problem, though!  A huge part of scripting AND ArcGIS, is trying things, having them fail, troubleshooting and trying again.  Look at the error and try to figure out what's going wrong.
+            \item Try to include print statements using format strings at various points through the script to give you messages to better help you figure out what part is failing, or if it's still working.
+            \item Prefix your print statements with \verb+if VERBOSE:+ so that you can turn them on and off by switching the value of \verb+VERBOSE+ from \verb+True+ to \verb+False+, as desired.
+        \end{itemize}
+    \end{enumerate}
 \end{document}
