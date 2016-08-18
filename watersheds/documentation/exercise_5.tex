@@ -1,0 +1,41 @@
+\documentclass{article}
+
+\usepackage{listings}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage{color}
+
+\definecolor{stringgreen}{RGB}{0,170,0}
+
+\begin{document}
+\lstset{language=Python,breaklines=true,showstringspaces=false,stringstyle=\color{stringgreen},numbers=left`}
+
+\title{Exercise 5}
+\maketitle
+
+\section{Format Strings}
+One thing that you will find yourself doing when you write Python scripts is creating custom strings, text that depends on values being used in your script.  Sometimes this you may be constructing messages that your script should output, sometimes you are writing custom content to a file, and somethings you want to dynamically construct file names themselves.  In this exercise you will be creating a script that has many different steps, executing multiple tools many different times.  Being able to have your script dynamically create messages, so that you know what your script is doing, and files, so that you know what your script is outputting, is key to completing this exercise successfully.
+
+Python has a special way to allow you to easily create strings, called format strings (check this).  First, you'll have a brief overview, then we'll look at some examples, and finally, you'll create some of your own.  
+
+\subsection{Escape Characters}
+By now, you should have created some strings of your own, assigning files and URLs to variables.  You know that to create a string, you enclose text in single or double quotation marks (add something when this is introduced about you cant mix them).  However, what if you want to include a quotation mark \textit{in} one of your strings?  If you want to include an apostrophe, you could wrap your string in double quotes, and if you wanted to include dialog in your string (as demarcated by double quotes) you could wrap your string in single quotes, but this is both sloppy and does not cover all use cases.  What if someone says ``doesn't''?
+
+The essence of the problem is that some characters, like the single and double quotes have meaning for Python, so you need a way to let Python know that you don't mean the \textbf{literal} quotation character, and not the symbol that python assigns meaning to.  You do this by \textbf{escaping} the character, and the way it's done is quite simple.  You precede the character with a backlash\footnote{This is why it's always easier to separate your directories with forward slashes instead of backslashes, like Windows does} like so \verb+\"+.  This lets Python know you mean the literal \verb+"+ character and not the end of a string.  There are other \textbf{escape characters}, like \verb+\n+, which signifies a line break, or \verb+\t+, which signifies a tab, and a list can be found in \href{https://docs.python.org/2/reference/lexical_analysis.html#string-literals}{this table} if you are interested, although you need not concern yourself with every escape character.
+
+\subsection{Constructing format strings}
+Format strings essentially allow you to have variables in strings, it lets you add placeholders that will be expanded to a value.  The basic python placeholder is \verb+%s+ which means that the variable supplied to the format string should be treated as a string.  This makes it ideal for strings, and data that can be easily made into a string like numbers.  But how do you supply a variable to a format string?  You do so by adding a list of variables to use after the string, separating the string and the list with a \verb+%+ character.  Lets look at an example:
+
+\begin{lstlisting}
+    name = "Ralpherson"
+    age = 17
+    introduction_string = "My name is %s and I am %s years old!" % (name, age)
+\end{lstlisting}
+
+Now, the value of \verb+introduction_string+ is \verb+"My name is Ralpherson and I am 17 years old!"+.  You can do more advanced things with string formatting, including formatting numbers to have a sepcific number of decimal places, or leading zeros, but just using \verb+%s+ should be fine for now.
+
+\section{Making watersheds}
+While ArcGIS's watershed tool can create watersheds for multiple outlets at once, if the watersheds overlap at all, some of them will be truncated.  This makes creating full watersheds from a set of outlets a time consuming task.  Seperate files for each pour point would need to be created and the watershed tool would need to be used for each of them.  However, ArcGIS has some Python tools that make creating a script an ideal solution.
+
+\subsection{Cursors}
+The way to use Python to look at or change entries in a shapefile or any table in ArcGIS, is by using \textbf{cursors}.  Cursors can be \textbf{iterated} through with for loops like lists and then used to pull out, update, and insert values of specific fields.  In this exercise we will be using a cursor to pull out the individual outlet points as well as some sort identifying information, like a number or a name.  
+\end{document}
