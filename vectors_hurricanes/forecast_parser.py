@@ -2,11 +2,14 @@ from bs4 import BeautifulSoup
 import urllib2
 import re
 import csv
+import datetime
 
 BASE_URL = 'http://www.nhc.noaa.gov'
 
-TIME_AND_POS_REGEX = '[\s\S]*(\d\d\d\d) UTC \w\w\w (\w\w\w \d\d \d\d\d\d)[\s\S]*CENTER LOCATED NEAR ([\d.]+)N\s*([\d.]+)W.*\nPOSITION ACCURATE WITHIN\s+(\d+)\s*NM'
-CURRENT_WINDS_REGEX = '[\s\S]*MAX SUSTAINED WINDS.*\n([\s\S]*)\nWINDS[\s\S]*'
+ADVISORY_REGEX = "\"(.+fstadv.+)\""
+TIME_AND_POS_REGEX = '[\s\S]*(\d\d\d\d)(?:Z| UTC) \w\w\w (\w\w\w \d\d \d\d\d\d)[\s\S]*CENTER LOCATED NEAR ([\d.]+)N\s*([\d.]+)W.*\nPOSITION ACCURATE WITHIN\s+(\d+)\s*NM'
+CURRENT_WINDS_REGEX = '[\s\S]*MAX SUSTAINED WINDS.*([\s\S]*)\nWINDS[\s\S]*'
+#CURRENT_WINDS_REGEX = '[\s\S]*MAX SUSTAINED WINDS\s+(\d+)\s+KT[\s\S]*'
 SPEEDS_REGEX = '.*KT[^\d]*(\d+)(\w+)\s*(\d+)(\w+)\s*(\d+)(\w+)\s*(\d+)(\w+)'
 FORECAST_REGEX = '(FORECAST VALID.*W.*\nMAX WIND.*KT.\n(.*NW.\n)*)' 
 FORECAST_POSITION_REGEX = 'FORECAST VALID.*Z\s([\d.]+)N\s*([\d.]+)W'
@@ -20,6 +23,11 @@ CSV_HEADER = ['number', 'date', 'time', 'elapsed_time', 'latitude', 'longitude',
 HFW_VALUE = 64
 TSFW_VALUE = 50
 
+DATEFORMAT = "%b %d %Y %H%M"
+
+CALCULATE_ELAPSED = True
+RELATIVE_ELAPSED = False
+
 def get_advisory_time_and_position(advisory_string, results):
     t = re.compile(TIME_AND_POS_REGEX)
     match = t.match(advisory_string)
@@ -31,6 +39,8 @@ def get_advisory_time_and_position(advisory_string, results):
     return results
 
 def get_wind(winds_string, speed):
+    if winds_string is None:
+        return None
     winds = winds_string.split('\n')
     for wind in winds:
         if wind[:2] == str(speed):
@@ -41,7 +51,6 @@ def get_radii(wind_string):
     if wind_string == None:
         return None
     p = re.compile(SPEEDS_REGEX)
-    print type(wind_string)
     match = p.match(wind_string)
     results = {} 
     for i in range(0, len(match.groups()), 2):
@@ -77,7 +86,10 @@ def get_forecast_location(forecast_string):
 def get_forecast_winds(forecast_string):
     w = re.compile(FORECAST_WINDS_REGEX)
     match = w.search(forecast_string)
-    return match.group(1)
+    if match is None:
+        return None
+    else:
+        return match.group(1)
 
 def get_forecast_information(forecast_string, name, results):
     location = get_forecast_location(forecast_string)
@@ -92,15 +104,18 @@ def get_forecast_information(forecast_string, name, results):
 
 
 def get_forecasts(advisory_string, results):
+    fnames = ['12hr', '24hr', '36hr']
     f = re.compile(FORECAST_REGEX)
     forecasts = f.findall(advisory_string)
-    results = get_forecast_information(forecasts[0][0], '12hr', results)
-    results = get_forecast_information(forecasts[1][0], '24hr', results)
-    results = get_forecast_information(forecasts[2][0], '36hr', results)
+    for i in range(len(forecasts)):
+        if i > 2:
+            break
+        results = get_forecast_information(forecasts[i][0], fnames[i], results)
     return results
     
 def get_advisories(archive_soup):
     days = archive_soup.find_all(headers='col1')
+    print "found %s days" % len(days)
     advisory_urls = []
     for day in days:
         for link in day.find_all('a'):
@@ -108,6 +123,12 @@ def get_advisories(archive_soup):
             full_link = "%s%s" % (BASE_URL, href)
             advisory_urls.append(full_link)
     return advisory_urls
+
+def get_advisories2(archive_page):
+    a = re.compile(ADVISORY_REGEX)
+    links = a.findall(archive_page)
+    urls = ["%s%s" % (BASE_URL, link) for link in links]
+    return urls
 
 def get_old_advisories(archive_soup):
     table_rows = archive_soup.find_all('tr')
@@ -129,10 +150,13 @@ def is_old_advisory(archive_soup):
 
 def get_advisory_urls(archive_url):
     archive_string = urllib2.urlopen(archive_url).read()
+    return get_advisories2(archive_string)
     archive_soup = BeautifulSoup(archive_string, 'html.parser')
     if is_old_advisory(archive_soup):
+        print "old advisoriy"
         return get_old_advisories(archive_soup)
     else:
+        print "new advisory"
         return get_advisories(archive_soup)
 
 def get_advisory_dict(advisory_url, results):
@@ -143,11 +167,37 @@ def get_advisory_dict(advisory_url, results):
     return results
 
 def get_advisory_dictionary(url):
-    number = int(url[-8:-5])
+    try:
+        number = int(url[-8:-5])
+    except ValueError:
+        number = int(url[-10:-7])
     return get_advisory_dict(url, {'number': number})
 
+def advisory_datetime(advisory):
+    date = advisory['date']
+    time = int(advisory['time'])
+    dtstring = "%s %04d" % (date, time)
+    return datetime.datetime.strptime(dtstring, DATEFORMAT)
+
+def td_to_hours(timedelta):
+    hours = timedelta.days*24
+    hours += timedelta.seconds/3600
+    return hours
+
+def build_elapsed_time(advisory_list):
+    initial = advisory_datetime(advisory_list[0])
+    for advisory in advisory_list:
+        current = advisory_datetime(advisory)
+        elapsed = current - initial
+        advisory['elapsed_time'] = td_to_hours(elapsed)
+        if RELATIVE_ELAPSED:
+            initial = current
+    return advisory_list
+
 def advisory_list_to_csv(advisory_list, output_file):
-    csv_file = open(output_file, 'w')
+    if CALCULATE_ELAPSED:
+        advisory_list = build_elapsed_time(advisory_list)
+    csv_file = open(output_file, 'wb')
     writer = csv.DictWriter(csv_file, fieldnames=CSV_HEADER)
     writer.writeheader()
     for advisory in advisory_list:
@@ -160,4 +210,5 @@ def get_advisories_list(archive_url):
     advisories_list = []
     for index, url in enumerate(advisory_urls):
         advisories_list.append(get_advisory_dict(url, {'number': index+1}))
+    print "found %s advisories" % len(advisories_list)
     return advisories_list
