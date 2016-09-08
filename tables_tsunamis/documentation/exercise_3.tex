@@ -1,8 +1,9 @@
 \documentclass{article}
 
-\usepackage[T1]{fontenc} 
-\usepackage{lmodern}
+%\usepackage[T1]{fontenc} 
+%\usepackage{lmodern}
 \usepackage{graphicx}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
 
 \graphicspath{{graphics/}}
 
@@ -13,25 +14,31 @@
 \section{The Python Shell}
 Up until now we have have worked with Python scripts, text files, that we tell the computer to run.  The computer opens up the file and then runs each instruction, one at a time.  However we can also feed instructions to the computer one at a time, working on the fly.
 \begin{enumerate}
-    \item Open up IDLE.  This time, don't open up a file, instead notice the \texttt{>>>}.  This is the prompt of the Python \textbf{shell}, you type an instruction, press the ``enter'' or ``return'' key, and then the computer executes the instruction.  Lets give it a spin.
+    \item Open up IDLE.  This time, don't open up a file, instead notice the \texttt{>>>}.  This is the prompt of the Python \textbf{shell}. Here's how it works, you type an instruction, press the ``enter'' or ``return'' key, and then the computer executes the instruction.  Lets give it a spin.
+
+        \includegraphics[width=\linewidth]{shell}
     \item Write an instruction that assigns a variable (label) to a string, you can choose the variable and the string.  If you've forgotten how to write this instruction, look back to previous Python instructions.
 
-    Variables can be almost anything in python but there are still some rules to what is a valid variable name.  These are:
+    Variables can be almost anything in Python but there are still some rules to what is a valid variable name.  These are:
     \begin{itemize}
         \item Variables can only consist of letters, numbers, and underscores.
         \item Variables must start with a letter or an underscore.
-        \item Variables cant be any of the \textbf{reserved words} in Python.  
-              Python won't let you used a reserved word for a variable, if you try, it will stop executing the script and give you an error message, so you don't need to worry about learning them.  If you want to take a look, type in the following two instructions (hitting the ``enter'' key between them: 
+        \item Variables can't be any of the keywords that Python uses.  
+              Python won't let you use a reserved word for a variable, if you try, it will stop executing the script and give you an error message, so you don't need to worry about learning them.  If you want to take a look, type in the following two instructions (hitting the ``enter'' key between them: 
               \begin{enumerate}
                   \item \texttt{>>> import keyword}
                   \item \texttt{>>> keyword.kwlist}
               \end{enumerate}
+
+            You can also find a list \href{https://docs.python.org/2/reference/lexical_analysis.html#keywords}{here}
         \item Variables are case sensitive.  So \texttt{my\_variable}, \texttt{My\_Variable}, and \texttt{MY\_VARIABLE} are all distinct.
     \end{itemize}
-    \item Now, call the \texttt{print} function with the label you just set as the input.  If you've forgotten how to set input for a function, look back to previous labs.
-    \item Now make a list with the \texttt{List()} function, and then use that list's custom \texttt{append} function to add some strings to the list, here's an example:
+
+    \includegraphics[width=\linewidth]{variables}
+    \item Now, call the \texttt{print} function with the label you just set as the input.  If you've forgotten how to set input for a function, look back to previous exercises.
+    \item Now make a list with the \texttt{list()} function, and then use that list's custom \texttt{append} function to add some strings to the list, here's an example:
     \begin{enumerate}
-        \item \texttt{my\_list = List()} 
+        \item \texttt{my\_list = list()} 
         \item \texttt{my\_list.append("this")}
         \item \texttt{my\_list.append("is")}
         \item \texttt{my\_list.append("a")} 
@@ -47,32 +54,31 @@ Up until now we have have worked with Python scripts, text files, that we tell t
     \item Press enter.  Notice that the Python shell automatically indents the line for you.  Write an instruction to print the item in the list.  What is the label that each item will be set to?
     \item Press enter twice to finish the loop.  What did the interpreter do?\end{enumerate}
 
-\section{Selecting underwater blocks}
+\section{Selecting Underwater Blocks}
 By now you should have created a new shoreline polygon and used ``Select by Location'' to get an estimate of the number of people affected by a certain amount of sea level rise.  But just how accurate is that number?  Surely you noticed the large number of spatial selections methods, is one definitively more accurate than another?  How much does the selection method change the final estimate?  While you could fool around and try out different options, wouldn't it be nice if there was a \textit{systematic} and \textit{automated} way to try different selection methods?  Perhaps\ldots(and I'm sure this will come as a great shock to you) \textit{a script}?
-\subsection{ArcGIS documentation}
-ArcGIS has quite an extensive amount of documentation, which perhaps you have already started to become familiar with.  If you are thinking about writing a python script to automate an ArcGIS task, this documentation is probably the first place to go to figure out how to change tools that you run from ArcMap into instructions for Python.  Open up a web browser and search for the tool we're currently looking to make a script for, ``Select Layer by Location''.  There will be multiple similar results from the documentation for different versions of ArcGIS.  While they'll all probably be accurate try to find one for the version we have on the lab computers, 10.3
+\subsection{ArcGIS Documentation}
+ArcGIS has quite an extensive amount of documentation, which perhaps you have already started to become familiar with.  If you are thinking about writing a Python script to automate an ArcGIS task, this documentation is probably the first place to go to figure out how to use ArcGIS tools in Python.  Open up a web browser and search for the tool we're currently looking to make a script for, ``Select Layer by Location''.  There will be multiple similar results from the documentation for different versions of ArcGIS.  While they'll all probably be accurate, try to find one for the version we have on the lab computers, 10.4
 
-The documentation page should have a few different sections, Summary, Usage, Syntax, Code Sample, Environment, and Licensing Information.  If you were trying to learn more about what a tool does, Summary and Usage might be good sections to look at, but for now we're interested in Syntax, which tells you how to use the tool in a Python instruction, and Code Sample, which gives an example of it being used in a Python script.
+The documentation page should have a few different sections, Summary, Usage, Syntax, Code Sample, Environment, and Licensing Information.  If you're trying to learn more about what a tool does, Summary and Usage might be good sections to look at, but for now we're interested in Syntax, which tells you how to use the tool in a Python instruction, and Code Sample, which gives an example of it being used in a Python script.
 
-Go to the Syntax section and look at the first line (fig \ref{fig:syntax}).  Hopefully this looks similar to when you call a tool in Python.  Lets break it up into two chunks, the first part, outside of the parentheses, and section enclosed in parentheses.
+Go to the Syntax section and look at the first line.\\
+    \includegraphics[width=\linewidth]{syntax_summary}
+
+Hopefully this looks similar to when you call a tool in Python.  Lets break it up into two chunks, the first part, outside of the parentheses, and section enclosed in parentheses.
 \begin{enumerate}
     \item \texttt{SelectLayerByLocation\_management} This is the name of tool, as Python knows it. 
-    \item \texttt{(in\_layer, \{overlap\_type\}, ...)} These are the inputs the tool takes.  When Python executes the tool, the first input value given to it is assigned the variable \texttt{in\_layer} and will be treated as the input layer, the second is assigned the variable \texttt{overlap\_type} and so on and so forth.  The brackets surrounding an input means that this input is optional, you could call the tool \texttt{SelectLayerByLocation\_management(in\_layer)} or \texttt{SelectLayerByLocation\_management(in\_layer, overlap\_type)} 
-        and so on and so forth.  Some inputs left unspecified are automatically given a default value set by the tool.
+    \item \texttt{(in\_layer, \{overlap\_type\}, ...)} These are the inputs the tool takes.  When Python executes the tool, the first input value given to it is assigned the variable \texttt{in\_layer} and will be treated as the input layer, the second is assigned the variable \texttt{overlap\_type} and so on and so forth.  The brackets surrounding an input means that this input is optional, you could call the tool with the statement \texttt{SelectLayerByLocation\_management(in\_layer)} or \texttt{SelectLayerByLocation\_management(in\_layer, overlap\_type)} 
+        and so on and so forth.  Some of the optional inputs left unspecified are automatically given a default value set by the tool.
 
     Since Python assigns input variables in order, what do you do if you want to use some optional inputs but not others?  For example, what if you were using the \texttt{SelectLayerByLocation\_management} tool and wanted to specify values for \texttt{overlap\_type} and \texttt{search\_distance} but not \texttt{select\_features}?  In this case you can explicitly specify which input value corresponds to which input variable: 
-    %\texttt{\tiny SelectLayerByLocation\_management(my\_input\_layer, my\_overlap, search\_distance="WITHIN"}
+
 \end{enumerate}
+\noindent    \texttt{SelectLayerByLocation\_management(my\_input\_layer, my\_overlap, search\_distance="WITHIN")}
+\vspace{2mm}
 
 Now continue down the table just below, with columns for Parameter, Explanation, and Data Type.  This tells you what each input, or parameter,  is actually used for, whether or not it's optional, what the default value is, and more.
 
-\begin{figure}
-    \includegraphics[width=\textwidth]{syntax_summary}
-    \caption{Name and inputs of the tools}
-    \label{fig:syntax}
-\end{figure}
-
-One of the parameters we are interested in is \texttt{overlap\_type} parameter.  ArcGIS has a set list of overlap types, each of which is listed in the table.  However, if you were to call this tool in python, how do you indicate which overlap type you are interested in.  Notice the third column, ``Data Type''.  It says ``String'', which for Python is text surrounded by quotations.  If you wanted to use the \texttt{COMPLETELY\_CONTAINS} overlap type when you run the tool, it would look something like this: 
+One of the parameters we are interested in is \texttt{overlap\_type} parameter.  ArcGIS has a set list of overlap types, each of which is listed in the table.  However, if you were to call this tool in Python, how do you indicate which overlap type you are interested in?  Notice the third column, ``Data Type''.  It says ``String'', if you've forgotten what a string is, check the last exercises, or your portfolio's glossary.  If you wanted to use the \texttt{COMPLETELY\_CONTAINS} overlap type when you run the tool, it would look something like this: 
 
 \noindent
 \texttt{SelectLayerByLocation\_management(..."COMPLETELY\_CONTAINS"...)} 
@@ -85,7 +91,7 @@ or
 \section{Comparing Overlap Types}
 \begin{enumerate}
     \item Download and extract the zip file for this weeks exercise.
-    \item Open up \texttt{exercise\_3.py} in IDLE.  
+    \item Open up \texttt{exercise\_3.py} in IDLE.  This is a script that will create the new shoreline polygon for a given amount of sea level rise, and then select the affected census blocks and sum the total population affected.  Most importantly, it can compare multiple spatial selection methods.
     \item Look at the first few lines with incomplete statements for assigning variables with upper-case names.  The first four will be strings. 
     \begin{enumerate}
         \item \texttt{POPULATION\_FEATURE} and \texttt{ELEVATION\_RASTER} will be paths to the files in question.  
@@ -98,7 +104,7 @@ or
     \item Now, onto the loop.  This for loop selects the census blocks affected by sea level rise, and sums the total number of people affected.  
     \item By know you should know enough about loops to identify which instructions will be repeated.  You should also know enough to figure what to replace the question marks with.  
     \item Fill in your values for the variables defined at the top and then fix the for loop.  
-    \item Now, run the script.  Did it work?  Did it do what you thought?
+    \item Now, run the script.  Did it work?  Did it do what you thought?  Do you have an idea of how you could modify the script to calculate the people affected by many different amounts of sea level rise?
 \end{enumerate}
 
 \end{document}
